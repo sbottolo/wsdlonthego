@@ -470,6 +470,8 @@ func (ge *goEncoder) cacheSOAPOperations(d *wsdl.Definitions) {
 var interfaceTypeT = template.Must(template.New("interfaceType").Parse(`
 // New{{.Name}} creates an initializes a {{.Name}}.
 func New{{.Name}}(cli *soap.Client) {{.Name}} {
+	cli.Namespace = Namespace
+	cli.URL = cli.URL + "/{{.Name}}?wsdl"
 	return &{{.Impl}}{cli}
 }
 
