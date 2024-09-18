@@ -7,7 +7,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"reflect"
 
@@ -150,7 +149,7 @@ func doRoundTrip(c *Client, setHeaders func(*http.Request), in, out Message) err
 	if resp.StatusCode != http.StatusOK {
 		// read only the first MiB of the body in error case
 		limReader := io.LimitReader(resp.Body, 1024*1024)
-		body, _ := ioutil.ReadAll(limReader)
+		body, _ := io.ReadAll(limReader)
 		return &HTTPError{
 			StatusCode: resp.StatusCode,
 			Status:     resp.Status,

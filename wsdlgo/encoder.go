@@ -13,7 +13,6 @@ import (
 	"go/parser"
 	"go/token"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -1367,27 +1366,17 @@ func (ge *goEncoder) genGoStruct(w io.Writer, d *wsdl.Definitions, ct *wsdl.Comp
 
 func (ge *goEncoder) genGoOpStruct(w io.Writer, d *wsdl.Definitions, bo *wsdl.BindingOperation) error {
 	name := goSymbol(bo.Name)
-	function := ge.funcs[name]
 
-	if function.Input == nil {
-		log.Printf("function input is nil! %v is %v", name, function)
-	} else {
-		message := trimns(function.Input.Message)
-		inputMessage := ge.messages[message]
+	inputMessage := ge.messages[trimns(ge.funcs[bo.Name].Input.Message)]
 
-		// No-Op on operations which don't take arguments
-		// (These can be inlined, and don't need to pollute the file)
-		if len(inputMessage.Parts) > 0 {
-			ge.genOpStructMessage(w, d, name, inputMessage)
-		}
+	// No-Op on operations which don't take arguments
+	// (These can be inlined, and don't need to pollute the file)
+	if len(inputMessage.Parts) > 0 {
+		ge.genOpStructMessage(w, d, name, inputMessage)
 	}
 
-	if function.Output == nil {
-		log.Printf("function output is nil! %v is %v", name, function)
-	} else {
-		// Output messages are always required
-		ge.genOpStructMessage(w, d, name, ge.messages[trimns(ge.funcs[bo.Name].Output.Message)])
-	}
+	// Output messages are always required
+	ge.genOpStructMessage(w, d, name, ge.messages[trimns(ge.funcs[bo.Name].Output.Message)])
 
 	return nil
 }
