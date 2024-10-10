@@ -241,6 +241,7 @@ func (ge *goEncoder) encode(w io.Writer, d *wsdl.Definitions) error {
 		ge.writeComments(w, "Namespace", "")
 		fmt.Fprintf(w, "var Namespace = %q\n\n", d.TargetNamespace)
 	}
+
 	_, err = io.Copy(w, &b)
 	return err
 }
@@ -469,9 +470,9 @@ func (ge *goEncoder) cacheSOAPOperations(d *wsdl.Definitions) {
 
 var interfaceTypeT = template.Must(template.New("interfaceType").Parse(`
 // New{{.Name}} creates an initializes a {{.Name}}.
+var Basename = "/{{.Name}}?wsdl"
+
 func New{{.Name}}(cli *soap.Client) {{.Name}} {
-	cli.Namespace = Namespace
-	cli.URL = cli.BaseURL + "/{{.Name}}?wsdl"
 	return &{{.Impl}}{cli}
 }
 
@@ -605,6 +606,7 @@ func (ge *goEncoder) writeGoFuncs(w io.Writer, d *wsdl.Definitions) error {
 
 var soapFuncT = template.Must(template.New("soapFunc").Parse(
 	`func (p *{{.PortType}}) {{.Name}}({{.Input}}) ({{.Output}}) {
+	p.cli.URL = p.cli.BaseURL + Basename
 	α := struct {
 		{{if .OpInputDataType}}
 			{{if .RPCStyle}}M{{end}} {{.OpInputDataType}} ` + "`xml:\"{{.OpName}}\"`" + `
