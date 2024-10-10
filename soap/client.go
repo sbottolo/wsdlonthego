@@ -44,6 +44,7 @@ type AuthHeader struct {
 
 // Client is a SOAP client.
 type Client struct {
+	BaseURL                string               // URL of the server
 	URL                    string               // URL of the server
 	UserAgent              string               // User-Agent header will be added to each request
 	Namespace              string               // SOAP Namespace

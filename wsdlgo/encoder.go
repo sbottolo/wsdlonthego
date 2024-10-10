@@ -471,7 +471,7 @@ var interfaceTypeT = template.Must(template.New("interfaceType").Parse(`
 // New{{.Name}} creates an initializes a {{.Name}}.
 func New{{.Name}}(cli *soap.Client) {{.Name}} {
 	cli.Namespace = Namespace
-	cli.URL = cli.URL + "/{{.Name}}?wsdl"
+	cli.URL = cli.BaseURL + "/{{.Name}}?wsdl"
 	return &{{.Impl}}{cli}
 }
 

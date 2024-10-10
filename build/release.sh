@@ -13,3 +13,4 @@ do
 	fi
 	rm -f wsdlonthego wsdlonthego.exe
 done
+															
